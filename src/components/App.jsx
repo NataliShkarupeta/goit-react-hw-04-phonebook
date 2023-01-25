@@ -1,5 +1,5 @@
 import React from 'react';
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { InputName } from './Input/InputName';
 import { Title } from './NameBlock/NameBlock';
 import { Wrap } from './DefaultStylse.styled';
@@ -8,27 +8,23 @@ import { InputFind } from './Input/InputFind';
 
 import { Contacts } from './Contacts/Contacts';
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+export const App = () => {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
 
-  addContact = data => {
+  const addContact = data => {
     const newContact = {
       id: nanoid(),
       ...data,
     };
-    this.setState(prev => ({
-      contacts: [...prev.contacts, newContact],
-    }));
+    setContacts(prev => [...prev, newContact]);
   };
 
-  nameForFilter = e => {
-    this.setState({ filter: e.target.value });
+  const nameForFilter = e => {
+    setFilter(e.target.value);
   };
-  cangeArreyContacts = () => {
-    const { filter, contacts } = this.state;
+
+  const cangeArreyContacts = () => {
     if (filter.length > 0) {
       return contacts.filter(contact =>
         contact.name.toLowerCase().includes(filter.toLowerCase().trim())
@@ -38,40 +34,40 @@ export class App extends Component {
     }
   };
 
-  onDeleteContact = idContact => {
-    this.setState(prev => ({
-      contacts: prev.contacts.filter(contact => contact.id !== idContact),
-    }));
+  const onDeleteContact = idContact => {
+    setContacts(prev => prev.filter(contact => contact.id !== idContact));
   };
 
-  componentDidMount() {
+  useEffect(() => {
     const contactsFromLs = localStorage.getItem('Contacts');
-    const parseContactsFromLs = JSON.parse(contactsFromLs);
-    if (parseContactsFromLs) {
-      this.setState({ contacts: parseContactsFromLs });
-    }
-  }
+    console.log(contactsFromLs);
+    if (contactsFromLs) {
+      setContacts(JSON.parse(contactsFromLs));
+    } else setContacts([]);
+  }, []);
 
-  componentDidUpdate(prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem('Contacts', JSON.stringify(this.state.contacts));
-    }
-  }
+  useEffect(() => {
+    //  if (contacts !== prevState.contacts)
+       localStorage.setItem('Contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-  render() {
-    return (
-      <>
-        <Title text="Phonebook" />
-        <Wrap>
-          <InputName contact={this.state.contacts} send={this.addContact} />
-        </Wrap>
-        <Title text="Contscts" />
-        <InputFind filter={this.state.filter} find={this.nameForFilter} />
-        <Contacts
-          contact={this.cangeArreyContacts()}
-          onDelete={this.onDeleteContact}
-        />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Title text="Phonebook" />
+      <Wrap>
+        <InputName contact={contacts} send={addContact} />
+      </Wrap>
+      <Title text="Contscts" />
+      <InputFind filter={filter} find={nameForFilter} />
+      <Contacts contact={cangeArreyContacts()} onDelete={onDeleteContact} />
+    </>
+  );
+};
+
+
+//   componentDidUpdate(prevState) {
+//     if (this.state.contacts !== prevState.contacts) {
+//       localStorage.setItem('Contacts', JSON.stringify(this.state.contacts));
+//     }
+//   }
+
