@@ -40,16 +40,16 @@ export const App = () => {
 
   useEffect(() => {
     const contactsFromLs = localStorage.getItem('Contacts');
-    console.log(contactsFromLs);
     if (contactsFromLs) {
       setContacts(JSON.parse(contactsFromLs));
     } else setContacts([]);
   }, []);
 
+  // //
   useEffect(() => {
-    //  if (contacts !== prevState.contacts)
-       localStorage.setItem('Contacts', JSON.stringify(contacts));
+    localStorage.setItem('Contacts', JSON.stringify(contacts));
   }, [contacts]);
+  // //
 
   return (
     <>
@@ -64,10 +64,9 @@ export const App = () => {
   );
 };
 
-
 //   componentDidUpdate(prevState) {
 //     if (this.state.contacts !== prevState.contacts) {
 //       localStorage.setItem('Contacts', JSON.stringify(this.state.contacts));
 //     }
 //   }
-// 
+//
