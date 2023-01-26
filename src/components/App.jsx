@@ -9,7 +9,9 @@ import { InputFind } from './Input/InputFind';
 import { Contacts } from './Contacts/Contacts';
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(
+    JSON.parse(localStorage.getItem('Contacts')) || []
+  );
   const [filter, setFilter] = useState('');
 
   const addContact = data => {
@@ -39,17 +41,8 @@ export const App = () => {
   };
 
   useEffect(() => {
-    const contactsFromLs = localStorage.getItem('Contacts');
-    if (contactsFromLs) {
-      setContacts(JSON.parse(contactsFromLs));
-    } else setContacts([]);
-  }, []);
-
-  // //
-  useEffect(() => {
     localStorage.setItem('Contacts', JSON.stringify(contacts));
   }, [contacts]);
-  // //
 
   return (
     <>
@@ -64,9 +57,4 @@ export const App = () => {
   );
 };
 
-//   componentDidUpdate(prevState) {
-//     if (this.state.contacts !== prevState.contacts) {
-//       localStorage.setItem('Contacts', JSON.stringify(this.state.contacts));
-//     }
-//   }
-//
+
